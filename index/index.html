@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ka" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SURVILI - სურვილი</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            accent: '#FF416C',
+                            secondary: '#FF4B2B',
+                            dark: '#0B0F19'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-white min-h-screen flex flex-col font-sans">
+
+    <!-- NAVBAR -->
+    <nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <span class="text-2xl font-black bg-gradient-to-r from-brand-accent to-brand-secondary bg-clip-text text-transparent">SURVILI</span>
+            <span class="text-xs bg-brand-accent/20 text-brand-accent px-2 py-0.5 rounded-full">სურვილი</span>
+        </div>
+        <div class="hidden md:flex space-x-6 text-sm">
+            <button onclick="scrollToSection('home')" class="hover:text-brand-accent transition">მთავარი</button>
+            <button onclick="scrollToSection('catalog')" class="hover:text-brand-accent transition">კატალოგი</button>
+            <button onclick="openWishlistModal()" class="hover:text-brand-accent transition">სურვილების სია</button>
+            <button onclick="openAIChatModal()" class="hover:text-brand-accent transition">AI ასისტენტი</button>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button id="langBtn" onclick="toggleLanguage()" class="text-xs px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 transition">GEO</button>
+            <button onclick="openUserModal()" class="bg-gradient-to-r from-brand-accent to-brand-secondary px-4 py-2 rounded-xl text-sm font-semibold shadow-lg hover:opacity-90 transition">პროფილი</button>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="flex-1 flex flex-col items-center justify-center text-center px-4 py-20">
+        <h1 id="hero-title" class="text-4xl md:text-6xl font-extrabold max-w-3xl leading-tight mb-6">
+            იპოვე იდეალური <span class="bg-gradient-to-r from-brand-accent to-brand-secondary bg-clip-text text-transparent">საჩუქარი</span> მარტივად
+        </h1>
+        <p id="hero-subtitle" class="text-gray-400 max-w-xl mb-8 text-base md:text-lg">
+            არ იცი რა აჩუქო? მიუთითე ვისთვის ეძებ და ბიუჯეტი – ხელოვნური ინტელექტი შეგირჩევს საუკეთესო იდეებს.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <button id="hero-btn-ai" onclick="openAIChatModal()" class="bg-gradient-to-r from-brand-accent to-brand-secondary px-8 py-3.5 rounded-xl font-bold shadow-lg hover:scale-105 transition">AI ასისტენტთან საუბარი</button>
+            <button id="hero-btn-catalog" onclick="scrollToSection('catalog')" class="glass-panel px-8 py-3.5 rounded-xl font-bold hover:bg-gray-800 transition">კატალოგის დათვალიერება</button>
+        </div>
+    </section>
+
+    <!-- CATALOG SECTION -->
+    <section id="catalog" class="px-6 py-16 max-w-6xl mx-auto w-full">
+        <h2 id="catalog-title" class="text-2xl font-bold mb-8">პოპულარული კატეგორიები</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="text-3xl mb-4">🎁</div>
+                <h3 class="font-bold text-lg mb-2">ტექნოლოგიები და გაჯეტები</h3>
+                <p class="text-gray-400 text-sm mb-4">თანამედროვე მოწყობილობები ინოვატორებისთვის.</p>
+                <button onclick="openAIChatModal()" class="text-brand-accent text-sm font-semibold hover:underline">მირჩიე მსგავსი →</button>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="text-3xl mb-4">📚</div>
+                <h3 class="font-bold text-lg mb-2">წიგნები და თვითგანვითარება</h3>
+                <p class="text-gray-400 text-sm mb-4">საუკეთესო ბესტსელერები და მოტივაცია.</p>
+                <button onclick="openAIChatModal()" class="text-brand-accent text-sm font-semibold hover:underline">მირჩიე მსგავსი →</button>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="text-3xl mb-4">☕</div>
+                <h3 class="font-bold text-lg mb-2">თავგადასავლები და გამოცდილება</h3>
+                <p class="text-gray-400 text-sm mb-4">დაუვიწყარი ემოციები და ვაუჩერები.</p>
+                <button onclick="openAIChatModal()" class="text-brand-accent text-sm font-semibold hover:underline">მირჩიე მსგავსი →</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECRET SANTA SECTION -->
+    <section id="santa" class="glass-panel max-w-6xl mx-auto w-full rounded-3xl p-8 my-12 text-center border border-brand-accent/30">
+        <div class="text-4xl mb-3">🎅</div>
+        <h2 class="text-2xl font-bold mb-3">სექრეტ სანტა (Secret Santa)</h2>
+        <p class="text-gray-400 max-w-lg mx-auto mb-6 text-sm">მოაწყვე საიდუმლო გათამაშება მეგობრებთან, ოჯახის წევრებთან ან კოლეგებთან ერთად მარტივად.</p>
+        <button onclick="alert('სექრეტ სანტას გათამაშების ფუნქცია გააქტიურებულია!')" class="bg-gradient-to-r from-brand-accent to-brand-secondary px-6 py-3 rounded-xl text-sm font-semibold shadow-lg hover:scale-105 transition">გათამაშების შექმნა</button>
+    </section>
+
+    <!-- AI CHAT MODAL -->
+    <div id="aiModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg rounded-3xl flex flex-col h-[520px] overflow-hidden border border-gray-700">
+            <div class="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
+                <span class="font-bold flex items-center gap-2">🤖 სურვილის AI ასისტენტი</span>
+                <button onclick="closeAIChatModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+            </div>
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 text-sm">
+                <div class="glass-panel p-3 rounded-2xl text-gray-300">
+                    გამარჯობა! მე ვარ შენი პერსონალური საჩუქრების ასისტენტი. ვისთვის ეძებ საჩუქარს (მაგ: დედისთვის, მეგობრისთვის, კოლეგისთვის...) და რა გაქვს ბიუჯეტი?
+                </div>
+            </div>
+            <div class="p-3 border-t border-gray-800 flex gap-2 bg-gray-900/50">
+                <input id="aiInput" type="text" placeholder="ჩაწერე შენი მოთხოვნა..." class="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-accent" onkeypress="if(event.key === 'Enter') sendAIMessage()">
+                <button onclick="sendAIMessage()" class="bg-gradient-to-r from-brand-accent to-brand-secondary px-5 py-2 rounded-xl text-sm font-semibold">გაგზავნა</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WISHLIST MODAL -->
+    <div id="wishlistModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-6 relative">
+            <button onclick="closeWishlistModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">&times;</button>
+            <h3 class="text-xl font-bold mb-4">🎁 სურვილების სია</h3>
+            <p class="text-gray-400 text-sm mb-6">შენი შენახული საჩუქრები.</p>
+            <div class="text-center text-gray-500 py-8">ჯერჯერობით სურვილების სია ცარიელია.</div>
+        </div>
+    </div>
+
+    <!-- USER MODAL -->
+    <div id="userModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-6 relative">
+            <button onclick="closeUserModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">&times;</button>
+            <h3 class="text-xl font-bold mb-4">👤 მომხმარებლის პროფილი</h3>
+            <p class="text-gray-400 text-sm mb-6">მართე შენი პირადი მონაცემები.</p>
+            <div class="space-y-3">
+                <input type="text" placeholder="სახელი" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 text-sm">
+                <input type="email" placeholder="ელ-ფოსტა" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 text-sm">
+                <button onclick="alert('პროფილი შენახულია!'); closeUserModal();" class="w-full bg-gradient-to-r from-brand-accent to-brand-secondary py-2.5 rounded-xl font-semibold text-sm">შენახვა</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-6 text-xs text-gray-500 border-t border-gray-800/50 mt-auto">
+        &copy; 2026 SURVILI. ყველა უფლება დაცულია.
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const SUPABASE_URL = "https://ktvoacxzsikryqfchxlp.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_M0zfaFeUQrFCBf2ymQ1BZg_Y0DFyr0";
+        
+        // OPENAI_API_KEY უსაფრთხოდ ცარიელია, რომ კოდმა არ ამოაგდოს SyntaxError
+        const OPENAI_API_KEY = "";
+
+        let dbClient = null;
+        if (typeof window.supabase !== 'undefined') {
+            dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if(el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function openAIChatModal() { document.getElementById('aiModal').classList.remove('hidden'); }
+        function closeAIChatModal() { document.getElementById('aiModal').classList.add('hidden'); }
+        
+        function openWishlistModal() { document.getElementById('wishlistModal').classList.remove('hidden'); }
+        function closeWishlistModal() { document.getElementById('wishlistModal').classList.add('hidden'); }
+
+        function openUserModal() { document.getElementById('userModal').classList.remove('hidden'); }
+        function closeUserModal() { document.getElementById('userModal').classList.add('hidden'); }
+
+        // ენის გადართვა
+        let currentLang = 'ka';
+        function toggleLanguage() {
+            currentLang = currentLang === 'ka' ? 'en' : 'ka';
+            document.getElementById('langBtn').innerText = currentLang.toUpperCase();
+            
+            if(currentLang === 'en') {
+                document.getElementById('hero-title').innerHTML = 'Find the Perfect <span class="bg-gradient-to-r from-brand-accent to-brand-secondary bg-clip-text text-transparent">Gift</span> Easily';
+                document.getElementById('hero-subtitle').innerText = 'Don\'t know what to give? Specify recipient and budget - AI will select best ideas.';
+            } else {
+                document.getElementById('hero-title').innerHTML = 'იპოვე იდეალური <span class="bg-gradient-to-r from-brand-accent to-brand-secondary bg-clip-text text-transparent">საჩუქარი</span> მარტივად';
+                document.getElementById('hero-subtitle').innerText = 'არ იცი რა აჩუქო? მიუთითე ვისთვის ეძებ და ბიუჯეტი – ხელოვნური ინტელექტი შეგირჩევს საუკეთესო იდეებს.';
+            }
+        }
+
+        // ზუსტი კონტექსტური სატესტო AI ასისტენტი
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            if (!input || !input.value.trim()) return;
+            const chat = document.getElementById('chatMessages');
+
+            const queryText = input.value;
+            const query = queryText.toLowerCase();
+
+            chat.innerHTML += `<div class="glass-panel p-3 rounded-2xl text-right bg-brand-accent/20"><b>შენ:</b> ${queryText}</div>`;
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            setTimeout(() => {
+                let reply = "საინტერესო მოთხოვნაა! გირჩევთ შეარჩიოთ პერსონალიზებული საჩუქარი, რომელიც მის ჰობისა და ინტერესებს შეესაბამება.";
+
+                // ზუსტი კონტექსტის დეტექცია:
+                if (query.includes("დედა") || query.includes("დედისთვის") || query.includes("დედიკო") || query.includes("mother") || query.includes("mom")) {
+                    reply = "<b>დედისთვის საუკეთესო საჩუქრები:</b><br>1. ელეგანტური სუნამო ან თავის მოვლის ნაკრები.<br>2. თბილი პლედი / ხარისხიანი სახლის ტექსტილი.<br>3. სპა ან მასაჟის ვაუჩერი განტვირთვისთვის.<br>4. პერსონალიზებული საოჯახო ფოტოალბომი.";
+                } else if (query.includes("მეგობარ") || query.includes("ძმაკაც") || query.includes("დაქალ") || query.includes("friend")) {
+                    reply = "<b>მეგობრისთვის იდეალური ვარიანტები:</b><br>1. მხიარული სამაგიდო თამაში ჯგუფური შეკრებებისთვის.<br>2. პორტატული Wireless დინამიკი.<br>3. ტრენდული ჰუდი ან აქსესუარი.<br>4. შთაბეჭდილების ვაუჩერი (მაგ: კვადროციკლები, კინო, ან escape room).";
+                } else if (query.includes("ბიუჯეტი") || query.includes("იაფი") || query.includes("100") || query.includes("50") || query.includes("ლარი")) {
+                    reply = "<b>ხელმისაწვდომი და გემოვნებიანი საჩუქრები:</b><br>1. ხარისხიანი თერმო-ჭიქა ყოველდღიური გამოყენებისთვის.<br>2. ბესტსელერი წიგნი ან დღიური.<br>3. არომატული სანთლებისა და ჩაის ნაკრები.";
+                } else if (query.includes("კაც") || query.includes("მამაკაც") || query.includes("ქმარ") || query.includes("ბიჭ")) {
+                    reply = "<b>მამაკაცისთვის:</b><br>1. ტექნოლოგიური გაჯეტი (Wireless დამტენი, ყურსასმენები).<br>2. ტყავის საფულე ან ქამარი.<br>3. მრავალფუნქციური შვეიცარიული დანა ან ინსტრუმენტების ნაკრები.";
+                }
+
+                chat.innerHTML += `<div class="glass-panel p-3 rounded-2xl text-gray-300"><b>AI ასისტენტი:</b><br>${reply}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 700);
+        }
+    </script>
+</body>
+</html>
