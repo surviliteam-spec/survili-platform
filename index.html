@@ -271,7 +271,7 @@
         </div>
     </div>
 
-    <!-- USER ACCOUNT MODAL -->
+    <!-- USER ACCOUNT MODAL (Google Auth Only) -->
     <div id="userModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
         <div class="w-full max-w-md glass-panel p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-brand-accent/40 relative">
             <button onclick="closeUserModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
@@ -282,33 +282,22 @@
             </h3>
 
             <div id="authContainer" class="space-y-4">
-                <p class="text-xs text-gray-300" data-i18n="auth-desc">შედით სისტემაში Google ანგარიშით ან ტელეფონის ნომრით:</p>
+                <p class="text-xs text-gray-300" data-i18n="auth-desc">შედით სისტემაში თქვენი Google ანგარიშით, რათა შეინახოთ სურვილების სია:</p>
                 
-                <button onclick="loginWithGoogle()" class="w-full py-3 rounded-xl glass-panel border border-brand-gold/30 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-3 hover:bg-brand-gold/10 transition-all">
-                    <i class="fa-brands fa-google text-red-400 text-base"></i>
+                <!-- Google Login Button -->
+                <button onclick="loginWithGoogle()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-accent to-pink-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-3 shadow-lg hover:opacity-90 transition-all">
+                    <i class="fa-brands fa-google text-white text-base"></i>
                     <span data-i18n="btn-google">შესვლა Google-ით</span>
                 </button>
-
-                <div class="relative flex py-2 items-center">
-                    <div class="flex-grow border-t border-brand-accent/30"></div>
-                    <span class="flex-shrink mx-4 text-gray-400 text-[10px]" data-i18n="or-text">ან ტელეფონით</span>
-                    <div class="flex-grow border-t border-brand-accent/30"></div>
-                </div>
-
-                <div class="space-y-3">
-                    <input type="tel" id="userPhoneInput" placeholder="+995 555 12 34 56" class="w-full glass-input p-3 rounded-xl text-sm" data-i18n-placeholder="phone-placeholder">
-                    <button onclick="loginWithPhone()" class="w-full py-3 rounded-xl bg-brand-accent text-white font-bold text-xs sm:text-sm shadow-lg hover:opacity-90 transition-all" data-i18n="btn-phone">
-                        კოდის მიღება SMS-ით
-                    </button>
-                </div>
             </div>
 
+            <!-- Logged In View -->
             <div id="userProfileView" class="space-y-4 hidden text-center">
                 <div class="w-16 h-16 rounded-full bg-brand-accent/20 mx-auto flex items-center justify-center text-brand-gold text-2xl border border-brand-accent/40">
                     <i class="fa-solid fa-user-check"></i>
                 </div>
                 <div>
-                    <h4 id="profileDisplayName" class="text-white font-bold text-sm">გიორგი გიორგაძე</h4>
+                    <h4 id="profileDisplayName" class="text-white font-bold text-sm">მომხმარებელი</h4>
                     <p id="profileDisplayEmail" class="text-xs text-gray-400 mt-0.5">user@example.com</p>
                 </div>
                 <button onclick="logoutUser()" class="w-full py-2.5 rounded-xl bg-red-500/20 border border-red-500/40 text-red-300 font-semibold text-xs hover:bg-red-500/30 transition-all" data-i18n="btn-logout">
@@ -379,11 +368,8 @@
                 "ai-assistant": "AI ასისტენტი",
                 "ai-thinking": "AI ასისტენტი ფიქრობს...",
                 "modal-user-title": "ავტორიზაცია / პროფილი",
-                "auth-desc": "შედით სისტემაში Google ანგარიშით ან ტელეფონის ნომრით:",
+                "auth-desc": "შედით სისტემაში თქვენი Google ანგარიშით, რათა შეინახოთ სურვილების სია:",
                 "btn-google": "შესვლა Google-ით",
-                "or-text": "ან ტელეფონით",
-                "phone-placeholder": "+995 555 12 34 56",
-                "btn-phone": "კოდის მიღება SMS-ით",
                 "btn-logout": "გასვლა სისტემიდან",
                 "wishlist-title": "ჩემი სურვილების სია",
                 "wishlist-empty": "სურვილების სია ცარიელია",
@@ -420,11 +406,8 @@
                 "ai-assistant": "AI Assistant",
                 "ai-thinking": "AI Assistant is thinking...",
                 "modal-user-title": "Authorization / Profile",
-                "auth-desc": "Sign in with your Google account or Phone number:",
+                "auth-desc": "Sign in with your Google account to save your wishlist:",
                 "btn-google": "Sign in with Google",
-                "or-text": "or with phone",
-                "phone-placeholder": "+995 555 12 34 56",
-                "btn-phone": "Get Code via SMS",
                 "btn-logout": "Sign Out",
                 "wishlist-title": "My Wishlist",
                 "wishlist-empty": "Your Wishlist is empty",
@@ -579,6 +562,7 @@
         function openWishlistModal() { document.getElementById('wishlistModal').classList.remove('hidden'); }
         function closeWishlistModal() { document.getElementById('wishlistModal').classList.add('hidden'); }
 
+        /* --- SUPABASE GOOGLE AUTH --- */
         async function loginWithGoogle() {
             if (!dbClient) {
                 alert("Supabase client not initialized.");
@@ -589,32 +573,6 @@
                 options: { redirectTo: window.location.href }
             });
             if (error) alert(error.message);
-        }
-
-        async function loginWithPhone() {
-            const phone = document.getElementById('userPhoneInput').value.trim();
-            if (!phone) {
-                alert(currentLang === 'ka' ? 'გთხოვთ შეიყვანოთ ტელეფონის ნომერი' : 'Please enter phone number');
-                return;
-            }
-            if (!dbClient) {
-                alert("Supabase client not initialized.");
-                return;
-            }
-            const { data, error } = await dbClient.auth.signInWithOtp({ phone: phone });
-            if (error) {
-                alert(error.message);
-            } else {
-                const code = prompt(currentLang === 'ka' ? 'შეიყვანეთ SMS-ით მიღებული კოდი:' : 'Enter code received via SMS:');
-                if (code) {
-                    const { data: verifyData, error: verifyError } = await dbClient.auth.verifyOtp({ phone, token: code, type: 'sms' });
-                    if (verifyError) alert(verifyError.message);
-                    else {
-                        alert(currentLang === 'ka' ? 'წარმატებით გაიარეთ ავტორიზაცია! ✨' : 'Successfully authenticated! ✨');
-                        checkAuthSession();
-                    }
-                }
-            }
         }
 
         async function checkAuthSession() {
@@ -629,9 +587,9 @@
                 if(profileView) profileView.classList.remove('hidden');
                 
                 const user = session.user;
-                const name = user.user_metadata?.full_name || user.email || user.phone || 'User';
+                const name = user.user_metadata?.full_name || user.email || 'User';
                 if(document.getElementById('profileDisplayName')) document.getElementById('profileDisplayName').innerText = name;
-                if(document.getElementById('profileDisplayEmail')) document.getElementById('profileDisplayEmail').innerText = user.email || user.phone || '';
+                if(document.getElementById('profileDisplayEmail')) document.getElementById('profileDisplayEmail').innerText = user.email || '';
                 if(headerName) headerName.innerText = name.split(' ')[0];
             } else {
                 if(authContainer) authContainer.classList.remove('hidden');
@@ -645,6 +603,7 @@
             document.getElementById('headerUserName').innerText = currentLang === 'ka' ? 'პროფილი' : 'Profile';
         }
 
+        /* --- AI ASSISTANT LOGIC --- */
         function sendAIMessage() {
             const input = document.getElementById('aiInput');
             if (!input || !input.value.trim()) return;
@@ -759,14 +718,12 @@
             container.appendChild(row);
         }
 
-        /* --- გამართული Secret Santa ლოგიკა --- */
         const santaForm = document.getElementById('santaForm');
         if(santaForm) {
             santaForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const groupName = document.getElementById('santaGroupName').value;
                 
-                // სწორად ვიღებთ ყველა რიგში ჩაწერილ მონაცემს
                 const rows = document.querySelectorAll('.member-row');
                 const names = [];
                 const emails = [];
