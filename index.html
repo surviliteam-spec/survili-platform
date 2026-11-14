@@ -271,7 +271,7 @@
         </div>
     </div>
 
-    <!-- USER ACCOUNT MODAL (Google & Phone Auth via Supabase) -->
+    <!-- USER ACCOUNT MODAL -->
     <div id="userModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
         <div class="w-full max-w-md glass-panel p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-brand-accent/40 relative">
             <button onclick="closeUserModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
@@ -284,7 +284,6 @@
             <div id="authContainer" class="space-y-4">
                 <p class="text-xs text-gray-300" data-i18n="auth-desc">შედით სისტემაში Google ანგარიშით ან ტელეფონის ნომრით:</p>
                 
-                <!-- Google Login Button -->
                 <button onclick="loginWithGoogle()" class="w-full py-3 rounded-xl glass-panel border border-brand-gold/30 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-3 hover:bg-brand-gold/10 transition-all">
                     <i class="fa-brands fa-google text-red-400 text-base"></i>
                     <span data-i18n="btn-google">შესვლა Google-ით</span>
@@ -296,7 +295,6 @@
                     <div class="flex-grow border-t border-brand-accent/30"></div>
                 </div>
 
-                <!-- Phone Login Form -->
                 <div class="space-y-3">
                     <input type="tel" id="userPhoneInput" placeholder="+995 555 12 34 56" class="w-full glass-input p-3 rounded-xl text-sm" data-i18n-placeholder="phone-placeholder">
                     <button onclick="loginWithPhone()" class="w-full py-3 rounded-xl bg-brand-accent text-white font-bold text-xs sm:text-sm shadow-lg hover:opacity-90 transition-all" data-i18n="btn-phone">
@@ -305,7 +303,6 @@
                 </div>
             </div>
 
-            <!-- Logged In View (Hidden by default) -->
             <div id="userProfileView" class="space-y-4 hidden text-center">
                 <div class="w-16 h-16 rounded-full bg-brand-accent/20 mx-auto flex items-center justify-center text-brand-gold text-2xl border border-brand-accent/40">
                     <i class="fa-solid fa-user-check"></i>
@@ -582,7 +579,6 @@
         function openWishlistModal() { document.getElementById('wishlistModal').classList.remove('hidden'); }
         function closeWishlistModal() { document.getElementById('wishlistModal').classList.add('hidden'); }
 
-        /* --- SUPABASE AUTH (Google & Phone) --- */
         async function loginWithGoogle() {
             if (!dbClient) {
                 alert("Supabase client not initialized.");
@@ -649,7 +645,6 @@
             document.getElementById('headerUserName').innerText = currentLang === 'ka' ? 'პროფილი' : 'Profile';
         }
 
-        /* --- AI ASSISTANT LOGIC --- */
         function sendAIMessage() {
             const input = document.getElementById('aiInput');
             if (!input || !input.value.trim()) return;
@@ -764,17 +759,33 @@
             container.appendChild(row);
         }
 
+        /* --- გამართული Secret Santa ლოგიკა --- */
         const santaForm = document.getElementById('santaForm');
         if(santaForm) {
             santaForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const groupName = document.getElementById('santaGroupName').value;
-                const names = Array.from(document.querySelectorAll('.member-name')).map(i => i.value);
-                const emails = Array.from(document.querySelectorAll('.member-email')).map(i => i.value);
-                const wishlists = Array.from(document.querySelectorAll('.member-wishlist')).map(i => i.value);
+                
+                // სწორად ვიღებთ ყველა რიგში ჩაწერილ მონაცემს
+                const rows = document.querySelectorAll('.member-row');
+                const names = [];
+                const emails = [];
+                const wishlists = [];
+
+                rows.forEach(row => {
+                    const nameVal = row.querySelector('.member-name').value.trim();
+                    const emailVal = row.querySelector('.member-email').value.trim();
+                    const wishlistVal = row.querySelector('.member-wishlist').value.trim();
+                    
+                    if (nameVal && emailVal) {
+                        names.push(nameVal);
+                        emails.push(emailVal);
+                        wishlists.push(wishlistVal);
+                    }
+                });
 
                 if (names.length < 2) {
-                    alert(currentLang === 'ka' ? 'სანტების გასანაწილებლად საჭიროა სულ მცირე 2 მონაწილე!' : 'At least 2 participants required!');
+                    alert(currentLang === 'ka' ? 'სანტების გასანაწილებლად საჭიროა სულ მცირე 2 სრულყოფილი მონაწილე!' : 'At least 2 participants with name and email required!');
                     return;
                 }
 
