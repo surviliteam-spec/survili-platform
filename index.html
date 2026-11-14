@@ -213,15 +213,15 @@
                 <form id="santaForm" class="space-y-4">
                     <div>
                         <label class="block text-xs text-brand-gold mb-1 font-semibold" data-i18n="label-group">ჯგუფის / კომპანიის დასახელება</label>
-                        <input type="text" id="santaGroupName" required placeholder="მაგ: სურვილის გუნდი" class="w-full glass-input p-3 rounded-xl text-sm">
+                        <input type="text" id="santaGroupName" required placeholder="მაგ: სურვილის გუნდი" class="w-full glass-input p-3 rounded-xl text-sm" data-i18n-placeholder="group-placeholder">
                     </div>
 
                     <div id="membersContainer" class="space-y-3">
                         <label class="block text-xs text-brand-gold mb-1 font-semibold" data-i18n="label-members">მონაწილეები</label>
                         <div class="flex flex-col sm:flex-row gap-2 member-row">
-                            <input type="text" placeholder="სახელი გვარი" required class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                            <input type="email" placeholder="ელ-ფოსტა" required class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                            <input type="url" placeholder="Wishlist ბმული" class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-wishlist" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            <input type="text" placeholder="სახელი გვარი" required class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-name" data-i18n-placeholder="name-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            <input type="email" placeholder="ელ-ფოსტა" required class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-email" data-i18n-placeholder="email-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            <input type="url" placeholder="Wishlist ბმული" class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-wishlist" data-i18n-placeholder="wishlist-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                         </div>
                     </div>
 
@@ -358,6 +358,10 @@
                 "btn-add": "წევრის დამატება",
                 "btn-draw": "გახდი სანტა",
                 "santa-success": "🔒 სანტები წარმატებით განაწილდა!",
+                "group-placeholder": "მაგ: სურვილის გუნდი",
+                "name-placeholder": "სახელი გვარი",
+                "email-placeholder": "ელ-ფოსტა",
+                "wishlist-placeholder": "Wishlist ბმული",
                 "ai-modal-title": "სურვილის AI ასისტენტი",
                 "ai-welcome": "გამარჯობა! მე ვარ სურვილის AI ასისტენტი. ვისთვის ეძებ საჩუქარს და რა ბიუჯეტი გაქვს?",
                 "ai-placeholder": "დაწერე შენი კითხვა...",
@@ -396,6 +400,10 @@
                 "btn-add": "Add Member",
                 "btn-draw": "Draw Santa",
                 "santa-success": "🔒 Santas Successfully Assigned!",
+                "group-placeholder": "e.g., Survili Team",
+                "name-placeholder": "Full Name",
+                "email-placeholder": "Email",
+                "wishlist-placeholder": "Wishlist Link",
                 "ai-modal-title": "Survili AI Assistant",
                 "ai-welcome": "Hello! I am Survili AI Assistant. Who are you looking a gift for and what is your budget?",
                 "ai-placeholder": "Type your question...",
@@ -707,9 +715,9 @@
             const row = document.createElement('div');
             row.className = 'flex flex-col sm:flex-row gap-2 member-row';
             row.innerHTML = `
-                <input type="text" placeholder="${currentLang === 'ka' ? 'სახელი გვარი' : 'Full Name'}" required class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                <input type="email" placeholder="${currentLang === 'ka' ? 'ელ-ფოსტა' : 'Email'}" required class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                <input type="url" placeholder="${currentLang === 'ka' ? 'Wishlist ბმული' : 'Wishlist Link'}" class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-wishlist" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <input type="text" placeholder="${translations[currentLang]['name-placeholder']}" required class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-name" data-i18n-placeholder="name-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <input type="email" placeholder="${translations[currentLang]['email-placeholder']}" required class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-email" data-i18n-placeholder="email-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <input type="url" placeholder="${translations[currentLang]['wishlist-placeholder']}" class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-wishlist" data-i18n-placeholder="wishlist-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
             `;
             container.appendChild(row);
         }
