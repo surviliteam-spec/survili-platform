@@ -207,7 +207,7 @@
                 <div class="text-center mb-6 sm:mb-8">
                     <span class="text-brand-gold text-xs font-bold uppercase tracking-widest">Secret Santa</span>
                     <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1 sm:mt-2" data-i18n="santa-title">გახდი სანტა შენი გუნდისთვის</h2>
-                    <p class="text-gray-300 text-xs sm:text-sm mt-2" data-i18n="santa-desc">დაამატეთ მონაწილეები, გაანაწილეთ სანტები კონფიდენციალურად და ნახეთ მათი სურვილების სიები.</p>
+                    <p class="text-gray-300 text-xs sm:text-sm mt-2" data-i18n="santa-desc">დაამატეთ მონაწილეები, გაანაწილეთ სანტები კონფიდენციალურად და ნახეთ მათი ინტერესები და სურვილები.</p>
                 </div>
 
                 <form id="santaForm" class="space-y-4">
@@ -221,7 +221,7 @@
                         <div class="flex flex-col sm:flex-row gap-2 member-row">
                             <input type="text" placeholder="სახელი გვარი" required class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-name" data-i18n-placeholder="name-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                             <input type="email" placeholder="ელ-ფოსტა" required class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-email" data-i18n-placeholder="email-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                            <input type="url" placeholder="Wishlist ბმული" class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-wishlist" data-i18n-placeholder="wishlist-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            <input type="url" placeholder="Wishlist ბმული (არასავალდებულო)" class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl text-sm member-wishlist" data-i18n-placeholder="wishlist-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                         </div>
                     </div>
 
@@ -273,7 +273,7 @@
 
     <!-- USER ACCOUNT MODAL -->
     <div id="userModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
-        <div class="w-full max-w-md glass-panel p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-brand-accent/40 relative">
+        <div class="w-full max-w-lg glass-panel p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-brand-accent/40 relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeUserModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
@@ -282,7 +282,7 @@
             </h3>
 
             <div id="authContainer" class="space-y-4">
-                <p class="text-xs text-gray-300" data-i18n="auth-desc">შედით სისტემაში თქვენი Google ანგარიშით, რათა შეინახოთ სურვილების სია:</p>
+                <p class="text-xs text-gray-300" data-i18n="auth-desc">შედით სისტემაში თქვენი Google ანგარიშით, რათა მართოთ თქვენი ინტერესები და სურვილები:</p>
                 
                 <button onclick="loginWithGoogle()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-accent to-pink-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-3 shadow-lg hover:opacity-90 transition-all">
                     <i class="fa-brands fa-google text-white text-base"></i>
@@ -290,15 +290,33 @@
                 </button>
             </div>
 
-            <div id="userProfileView" class="space-y-4 hidden text-center">
-                <div class="w-16 h-16 rounded-full bg-brand-accent/20 mx-auto flex items-center justify-center text-brand-gold text-2xl border border-brand-accent/40">
-                    <i class="fa-solid fa-user-check"></i>
-                </div>
-                <div>
+            <!-- Logged In Profile View -->
+            <div id="userProfileView" class="space-y-5 hidden">
+                <div class="text-center">
+                    <div class="w-16 h-16 rounded-full bg-brand-accent/20 mx-auto flex items-center justify-center text-brand-gold text-2xl border border-brand-accent/40 mb-2">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
                     <h4 id="profileDisplayName" class="text-white font-bold text-sm">მომხმარებელი</h4>
                     <p id="profileDisplayEmail" class="text-xs text-gray-400 mt-0.5">user@example.com</p>
                 </div>
-                <button onclick="logoutUser()" class="w-full py-2.5 rounded-xl bg-red-500/20 border border-red-500/40 text-red-300 font-semibold text-xs hover:bg-red-500/30 transition-all" data-i18n="btn-logout">
+
+                <!-- Public Interests Section -->
+                <div class="space-y-2 border-t border-brand-accent/20 pt-4">
+                    <label class="block text-xs font-bold text-brand-gold" data-i18n="profile-interests-label">ჩემი ინტერესები & ჰობი (ხილვადია სეკრეტ სანტასთვის და AI-სთვის):</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="userInterestInput" placeholder="მაგ: ფოტოგრაფია, წიგნები..." class="flex-1 glass-input p-2.5 rounded-xl text-xs" data-i18n-placeholder="profile-interest-placeholder">
+                        <button onclick="addUserInterest()" class="px-4 py-2.5 rounded-xl bg-brand-accent text-white font-semibold text-xs" data-i18n="profile-interest-add">დამატება</button>
+                    </div>
+                    <div id="userInterestsContainer" class="flex flex-wrap gap-1.5 mt-2"></div>
+                </div>
+
+                <!-- Private Profile Wishlist -->
+                <div class="space-y-2 border-t border-brand-accent/20 pt-4">
+                    <h5 class="text-xs font-bold text-brand-gold" data-i18n="profile-wishlist-title">ჩემი პირადი სურვილების სია (დაფარულია):</h5>
+                    <div id="profileWishlistContainer" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                </div>
+
+                <button onclick="logoutUser()" class="w-full py-2.5 rounded-xl bg-red-500/20 border border-red-500/40 text-red-300 font-semibold text-xs hover:bg-red-500/30 transition-all mt-4" data-i18n="btn-logout">
                     გასვლა სისტემიდან
                 </button>
             </div>
@@ -352,7 +370,7 @@
                 "cat-tech": "ტექნიკა & გაჯეტები",
                 "cat-exp": "შთაბეჭდილებები & სპა",
                 "santa-title": "გახდი სანტა შენი გუნდისთვის",
-                "santa-desc": "დაამატეთ მონაწილეები, გაანაწილეთ სანტები კონფიდენციალურად და ნახეთ მათი სურვილების სიები.",
+                "santa-desc": "დაამატეთ მონაწილეები, გაანაწილეთ სანტები კონფიდენციალურად და ნახეთ მათი ინტერესები.",
                 "label-group": "ჯგუფის / კომპანიის დასახელება",
                 "label-members": "მონაწილეები",
                 "btn-add": "წევრის დამატება",
@@ -370,13 +388,17 @@
                 "ai-assistant": "AI ასისტენტი",
                 "ai-thinking": "AI ასისტენტი ფიქრობს...",
                 "modal-user-title": "ავტორიზაცია / პროფილი",
-                "auth-desc": "შედით სისტემაში თქვენი Google ანგარიშით, რათა შეინახოთ სურვილების სია:",
+                "auth-desc": "შედით სისტემაში თქვენი Google ანგარიშით, რათა მართოთ თქვენი ინტერესები:",
                 "btn-google": "შესვლა Google-ით",
                 "btn-logout": "გასვლა სისტემიდან",
                 "wishlist-title": "ჩემი სურვილების სია",
                 "wishlist-empty": "სურვილების სია ცარიელია",
                 "wishlist-share": "სიის ბმულის კოპირება / გაზიარება",
-                "wishlist-copied": "✓ ბმული დაკოპირდა!"
+                "wishlist-copied": "✓ ბმული დაკოპირდა!",
+                "profile-interests-label": "ჩემი ინტერესები & ჰობი (ხილვადია სეკრეტ სანტასთვის):",
+                "profile-interest-placeholder": "მაგ: ფოტოგრაფია, წიგნები...",
+                "profile-interest-add": "დამატება",
+                "profile-wishlist-title": "ჩემი პირადი სურვილების სია (დაფარულია):"
             },
             en: {
                 "nav-home": "Home",
@@ -394,7 +416,7 @@
                 "cat-tech": "Tech & Gadgets",
                 "cat-exp": "Experiences & Spa",
                 "santa-title": "Become Santa for Your Team",
-                "santa-desc": "Add participants, confidentially assign santas, and view their wishlists.",
+                "santa-desc": "Add participants, confidentially assign santas, and view their interests.",
                 "label-group": "Group / Company Name",
                 "label-members": "Participants",
                 "btn-add": "Add Member",
@@ -412,13 +434,17 @@
                 "ai-assistant": "AI Assistant",
                 "ai-thinking": "AI Assistant is thinking...",
                 "modal-user-title": "Authorization / Profile",
-                "auth-desc": "Sign in with your Google account to save your wishlist:",
+                "auth-desc": "Sign in with your Google account to manage your interests:",
                 "btn-google": "Sign in with Google",
                 "btn-logout": "Sign Out",
                 "wishlist-title": "My Wishlist",
                 "wishlist-empty": "Your Wishlist is empty",
                 "wishlist-share": "Copy / Share Wishlist Link",
-                "wishlist-copied": "✓ Link Copied!"
+                "wishlist-copied": "✓ Link Copied!",
+                "profile-interests-label": "My Interests & Hobbies (visible to Secret Santa):",
+                "profile-interest-placeholder": "e.g., photography, books...",
+                "profile-interest-add": "Add",
+                "profile-wishlist-title": "My Private Wishlist (Hidden):"
             }
         };
 
@@ -440,6 +466,8 @@
             document.getElementById('langLabel').innerText = currentLang === 'ka' ? 'GE | EN' : 'EN | GE';
             renderCatalog();
             renderWishlist();
+            renderUserInterests();
+            renderProfileWishlist();
         }
 
         const catalogItems = [
@@ -450,6 +478,8 @@
         ];
 
         let wishlist = [];
+        let userInterests = [];
+        let currentUserSession = null;
 
         function renderCatalog(filter = 'all') {
             const grid = document.getElementById('catalogGrid');
@@ -495,6 +525,8 @@
             updateWishlistBadge();
             renderCatalog();
             renderWishlist();
+            renderProfileWishlist();
+            syncUserDataToSupabase();
         }
 
         function updateWishlistBadge() {
@@ -526,6 +558,102 @@
                 `;
                 container.appendChild(div);
             });
+        }
+
+        function renderProfileWishlist() {
+            const container = document.getElementById('profileWishlistContainer');
+            if (!container) return;
+
+            if (wishlist.length === 0) {
+                container.innerHTML = `<p class="text-[11px] text-gray-400 text-center py-2">${translations[currentLang]['wishlist-empty']}</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            wishlist.forEach(item => {
+                const title = currentLang === 'ka' ? item.nameKa : item.nameEn;
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-2.5 glass-panel rounded-xl text-xs";
+                div.innerHTML = `
+                    <span class="font-bold text-white">${title} - <span class="text-brand-gold">${item.price}</span></span>
+                    <button onclick="toggleWishlist(${item.id})" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-trash"></i></button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function addUserInterest() {
+            const input = document.getElementById('userInterestInput');
+            if (!input || !input.value.trim()) return;
+            const val = input.value.trim();
+            if (!userInterests.includes(val)) {
+                userInterests.push(val);
+                input.value = '';
+                renderUserInterests();
+                syncUserDataToSupabase();
+            }
+        }
+
+        function removeUserInterest(val) {
+            userInterests = userInterests.filter(i => i !== val);
+            renderUserInterests();
+            syncUserDataToSupabase();
+        }
+
+        function renderUserInterests() {
+            const container = document.getElementById('userInterestsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (userInterests.length === 0) {
+                container.innerHTML = `<span class="text-[11px] text-gray-400">ინტერესები ჯერ არ არის მითითებული.</span>`;
+                return;
+            }
+
+            userInterests.forEach(interest => {
+                const tag = document.createElement('span');
+                tag.className = "px-2.5 py-1 rounded-lg bg-brand-accent/20 border border-brand-accent/40 text-[11px] text-brand-gold flex items-center gap-1.5";
+                tag.innerHTML = `<span>${interest}</span> <button onclick="removeUserInterest('${interest}')" class="hover:text-white">&times;</button>`;
+                container.appendChild(tag);
+            });
+        }
+
+        async function syncUserDataToSupabase() {
+            if (!dbClient || !currentUserSession || !currentUserSession.user) return;
+            try {
+                const userId = currentUserSession.user.id;
+                await dbClient.from('user_profiles').upsert({
+                    id: userId,
+                    email: currentUserSession.user.email,
+                    interests: userInterests, // საჯარო ინტერესები სანტასთვის
+                    wishlist: wishlist.map(w => w.id), // დაფარული სია
+                    updated_at: new Date()
+                });
+            } catch (err) {
+                console.error("Sync error:", err);
+            }
+        }
+
+        async function loadUserDataFromSupabase(userId) {
+            if (!dbClient) return;
+            try {
+                const { data } = await dbClient.from('user_profiles').select('*').eq('id', userId).single();
+                if (data) {
+                    if (data.interests && Array.isArray(data.interests)) {
+                        userInterests = data.interests;
+                    }
+                    if (data.wishlist && Array.isArray(data.wishlist)) {
+                        wishlist = catalogItems.filter(item => data.wishlist.includes(item.id));
+                        updateWishlistBadge();
+                        renderCatalog();
+                        renderWishlist();
+                    }
+                }
+            } catch (err) {
+                console.log("Profile load skipped or table not created yet.");
+            }
+            renderUserInterests();
+            renderProfileWishlist();
         }
 
         function copyWishlistShareLink() {
@@ -583,6 +711,7 @@
         async function checkAuthSession() {
             if (!dbClient) return;
             const { data: { session } } = await dbClient.auth.getSession();
+            currentUserSession = session;
             const authContainer = document.getElementById('authContainer');
             const profileView = document.getElementById('userProfileView');
             const headerName = document.getElementById('headerUserName');
@@ -596,6 +725,8 @@
                 if(document.getElementById('profileDisplayName')) document.getElementById('profileDisplayName').innerText = name;
                 if(document.getElementById('profileDisplayEmail')) document.getElementById('profileDisplayEmail').innerText = user.email || '';
                 if(headerName) headerName.innerText = name.split(' ')[0];
+
+                await loadUserDataFromSupabase(user.id);
             } else {
                 if(authContainer) authContainer.classList.remove('hidden');
                 if(profileView) profileView.classList.add('hidden');
@@ -604,6 +735,12 @@
 
         async function logoutUser() {
             if (dbClient) await dbClient.auth.signOut();
+            currentUserSession = null;
+            userInterests = [];
+            wishlist = [];
+            updateWishlistBadge();
+            renderCatalog();
+            renderWishlist();
             checkAuthSession();
             document.getElementById('headerUserName').innerText = currentLang === 'ka' ? 'პროფილი' : 'Profile';
         }
@@ -678,7 +815,8 @@
                 }
 
                 let targetPerson = isMom ? "დედისთვის" : isFriend ? "მეგობრისთვის" : isPartner ? "საყვარელი ადამიანისთვის" : "აღნიშნული მოთხოვნისთვის";
-                return `შესანიშნავი მოთხოვნაა! ${targetPerson} შევარჩიე საუკეთესო ვარიანტები:<br/><br/>${recs.join('<br/>')}<br/><br/>შეგიძლია ეს ნივთები იპოვო ქვემოთ კატალოგში და დაამატო სურვილების სიაში! 🎁`;
+                let interestNote = userInterests.length > 0 ? `<br/><small class="text-brand-gold">გათვალისწინებულია შენი შენახული ინტერესებიც: ${userInterests.join(', ')}</small>` : '';
+                return `შესანიშნავი მოთხოვნაა! ${targetPerson} შევარჩიე საუკეთესო ვარიანტები:<br/><br/>${recs.join('<br/>')}${interestNote}<br/><br/>შეგიძლია ეს ნივთები იპოვო ქვემოთ კატალოგში და დაამატო სურვილების სიაში! 🎁`;
             } else {
                 let recs = [];
                 if (budget && budget <= 160) {
@@ -761,6 +899,7 @@
                     giver: giver,
                     giverEmail: emails[idx],
                     target: names[receiverIndices[idx]],
+                    targetEmail: emails[receiverIndices[idx]],
                     targetWishlist: wishlists[receiverIndices[idx]] || '#'
                 }));
 
@@ -789,19 +928,43 @@
                         <span class="font-bold text-white text-sm"><i class="fa-solid fa-user text-brand-gold mr-2"></i>${m.giver}</span>
                         <span class="text-[10px] text-gray-400">${m.giverEmail}</span>
                     </div>
-                    <div id="target-box-${idx}" class="p-3 glass-panel-gold rounded-xl text-center hidden">
+                    <div id="target-box-${idx}" class="p-3 glass-panel-gold rounded-xl text-center hidden space-y-2">
                         <span class="text-xs text-gray-400 block">${currentLang === 'ka' ? 'შენი სანტას სამიზნეა:' : 'Your target is:'}</span>
-                        <span class="font-extrabold text-brand-gold text-base block mt-1">${m.target}</span>
-                        ${m.targetWishlist !== '#' ? `<a href="${m.targetWishlist}" target="_blank" class="inline-block mt-2 text-xs text-brand-accent hover:underline"><i class="fa-solid fa-heart mr-1"></i>${currentLang === 'ka' ? 'სურვილების სიის ნახვა' : 'View Wishlist'}</a>` : ''}
+                        <span class="font-extrabold text-brand-gold text-base block">${m.target}</span>
+                        
+                        <!-- საჯარო ინტერესების ჩვენება სანტასთვის -->
+                        <div class="text-xs text-gray-300 bg-brand-card/50 p-2 rounded-lg text-left">
+                            <b class="text-brand-gold">${currentLang === 'ka' ? 'ინტერესები:' : 'Interests:'}</b> <span id="target-interests-${idx}">იტვირთება...</span>
+                        </div>
+
+                        ${m.targetWishlist !== '#' ? `<a href="${m.targetWishlist}" target="_blank" class="inline-block text-xs text-brand-accent hover:underline"><i class="fa-solid fa-heart mr-1"></i>${currentLang === 'ka' ? 'სურვილების სიის ნახვა' : 'View Wishlist'}</a>` : ''}
                     </div>
                     <button onclick="toggleRevealTarget(${idx})" class="w-full py-2 rounded-xl bg-brand-accent/20 border border-brand-accent/40 text-xs text-white hover:bg-brand-accent transition-all">
                         👁️ ${currentLang === 'ka' ? 'ვინაობის სანახავად დააჭირეთ' : 'Click to Reveal Identity'}
                     </button>
                 `;
                 container.appendChild(card);
+                
+                loadTargetInterests(m.targetEmail, idx);
             });
 
             document.getElementById('santaResults').classList.remove('hidden');
+        }
+
+        async function loadTargetInterests(email, idx) {
+            if (!dbClient) return;
+            try {
+                const { data } = await dbClient.from('user_profiles').select('interests').eq('email', email).single();
+                const el = document.getElementById(`target-interests-${idx}`);
+                if (el && data && data.interests && data.interests.length > 0) {
+                    el.innerText = data.interests.join(', ');
+                } else if (el) {
+                    el.innerText = currentLang === 'ka' ? 'მითითებული არ არის' : 'Not specified';
+                }
+            } catch (e) {
+                const el = document.getElementById(`target-interests-${idx}`);
+                if (el) el.innerText = currentLang === 'ka' ? 'მითითებული არ არის' : 'Not specified';
+            }
         }
 
         function toggleRevealTarget(idx) {
